@@ -297,6 +297,10 @@ contract AuditWorkflow  is WorkflowBase, Ownable{
 	
 	* `Image` (Image)
 	* `Description` (String)
+	
+	The following calculations involving data from other smart-contracts will be done next:
+	
+	* `Image` = `( Image == "" ) ? Auditor Flow Image : Image`
 */
 	function completeAudit(uint256 id,string calldata image,string calldata description) external returns (uint256) {
 		Audit memory item = getItem(id);
@@ -304,6 +308,9 @@ contract AuditWorkflow  is WorkflowBase, Ownable{
 		_assertStatus(item, 2);
 		item.image = image;
 		item.description = description;
+		IExternal0xleague_auditor_profile auditorFlow = IExternal0xleague_auditor_profile(serviceLocator.getService(auditorFlowAddress));
+		string memory auditorFlowImage = auditorFlow.getImage(item.auditorId);
+		item.image = ( item.image == "" ) ? auditorFlowImage : item.image;
 		item.status = 3;
 		items[id] = item;
 		emit ItemUpdated(id, item.status);
