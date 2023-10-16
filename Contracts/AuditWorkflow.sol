@@ -17,10 +17,14 @@ interface IExternal0xleague_auditor_profile {
 }
 import "https://raw.githubusercontent.com/Ideevoog/Toolblox.Token/main/Contracts/WorkflowBase.sol";
 import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v4.9.3/contracts/access/Ownable.sol";
+import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v4.9.3/contracts/token/ERC721/ERC721.sol";
+import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v4.9.3/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "https://raw.githubusercontent.com/OpenZeppelin/openzeppelin-contracts/v4.9.3/contracts/security/ReentrancyGuard.sol";
+import "https://raw.githubusercontent.com/Ideevoog/Toolblox.Token/main/Contracts/OwnerPausable.sol";
 /*
 	Toolblox smart-contract workflow: https://app.toolblox.net/summary/0xleague_audit_management
 */
-contract AuditWorkflow  is WorkflowBase, Ownable{
+contract AuditWorkflow  is WorkflowBase, Ownable, ERC721, ERC721Enumerable, ReentrancyGuard, OwnerPausable{
 	struct Audit {
 		uint id;
 		uint64 status;
@@ -55,7 +59,7 @@ contract AuditWorkflow  is WorkflowBase, Ownable{
 		}
 		item.auditor = _msgSender();
 	}
-	constructor()  {
+	constructor() ERC721("Audit - 0xLeague Audit Management", "AUDIT") {
 		_transferOwnership(_msgSender());
 		serviceLocator = IExternalServiceLocator(0xaD26E98e521ef7Cd31c4a915Fe71560C968C37Db);
 	}
@@ -90,6 +94,30 @@ contract AuditWorkflow  is WorkflowBase, Ownable{
 		for (uint256 i = 0; i < ids.length; i++) result[i] = items[ids[i]];
 		return result;
 	}
+	function getItemOwner(Audit memory item) private view returns (address itemOwner) {
+				if (item.status == 0) {
+			itemOwner = item.client;
+		}
+		else 		if (item.status == 1) {
+			itemOwner = item.client;
+		}
+		else 		if (item.status == 2) {
+			itemOwner = item.auditor;
+		}
+		else 		if (item.status == 3) {
+			itemOwner = item.client;
+		}
+		else 		if (item.status == 4) {
+			itemOwner = item.client;
+		}
+        else {
+			itemOwner = address(this);
+        }
+        if (itemOwner == address(0))
+        {
+            itemOwner = address(this);
+        }
+	}
 	
 	mapping(uint => uint[]) public itemsByAuditorId;
 	function getItemIdsByAuditorId(uint auditorId) public view returns (uint[] memory) {
@@ -116,6 +144,38 @@ contract AuditWorkflow  is WorkflowBase, Ownable{
 		if(newForeignKey != 0) {
 			addFkMappingItem(itemsByAuditorId, newForeignKey, id);
 		}
+	}
+	function _afterTokenTransfer(address from, address to, uint256 firstTokenId, uint256 batchSize) internal virtual override {
+		super._afterTokenTransfer(from, to, firstTokenId, batchSize);
+		if (from == to)
+		{
+			return;
+		}
+		Audit memory item = getItem(firstTokenId);
+		if (item.status == 0) {
+			item.client = to;
+		}
+		if (item.status == 1) {
+			item.client = to;
+		}
+		if (item.status == 2) {
+			item.auditor = to;
+		}
+		if (item.status == 3) {
+			item.client = to;
+		}
+		if (item.status == 4) {
+			item.client = to;
+		}
+	}
+	function supportsInterface(bytes4 interfaceId) public view override(ERC721,ERC721Enumerable) returns (bool) {
+		return super.supportsInterface(interfaceId);
+	}
+	function _beforeTokenTransfer(address from, address to, uint256 firstTokenId, uint256 batchSize) internal virtual override (ERC721,ERC721Enumerable) {
+		super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
+	}
+	function _baseURI() internal view virtual override returns (string memory) {
+		return "https://nft.toolblox.net/api/metadata?workflowId=0xleague_audit_management&id=";
 	}
 	function getId(uint id) public view returns (uint){
 		return getItem(id).id;
@@ -164,9 +224,12 @@ contract AuditWorkflow  is WorkflowBase, Ownable{
 	* `Git commit` (Text)
 	* `Telegram id` (Text)
 	* `Name` (Text)
+	* `Client` (User)
+	* `Auditor` (User)
+	* `NDA` (Blob)
 	
 	#### Access Restrictions
-	Access is specifically restricted to the user with the address from the `Client` property. If `Client` property is not yet set then the method caller becomes the objects `Client`.
+	Access is exclusively provided to the workflow at URL: `0xleague_auditor_profile`.
 	
 	#### Checks and updates
 	The following properties will be updated on blockchain:
@@ -175,20 +238,28 @@ contract AuditWorkflow  is WorkflowBase, Ownable{
 	* `Git commit` (String)
 	* `Telegram id` (String)
 	* `Name` (String)
+	* `Client` (Address)
+	* `Auditor` (Address)
+	* `NDA` (Blob)
 */
-	function requestAudit(uint auditorId,string calldata gitCommit,string calldata telegramId,string calldata name) external returns (uint256) {
+	function requestAudit(uint auditorId,string calldata gitCommit,string calldata telegramId,string calldata name,address client,address auditor,string calldata nda) external whenNotPaused nonReentrant returns (uint256) {
 		uint256 id = _getNextId();
 		Audit memory item;
 		item.id = id;
 		items[id] = item;
-		_assertOrAssignClient(item);
+		require(_msgSender() == serviceLocator.getService(auditorFlowAddress), "Only Auditor flow is allowed to execute");
 		uint oldAuditorId = item.auditorId;
 		item.auditorId = auditorId;
 		item.gitCommit = gitCommit;
 		item.telegramId = telegramId;
 		item.name = name;
+		item.client = client;
+		item.auditor = auditor;
+		item.nda = nda;
 		item.status = 0;
 		items[id] = item;
+		address newOwner = getItemOwner(item);
+		_mint(newOwner, id);
 		uint newAuditorId = item.auditorId;
 		_setItemIdByAuditorId(oldAuditorId, newAuditorId, item.id);
 		emit ItemUpdated(id, item.status);
@@ -212,13 +283,18 @@ contract AuditWorkflow  is WorkflowBase, Ownable{
 	
 	* `Price` (Money)
 */
-	function giveOffer(uint256 id,uint price) external returns (uint256) {
+	function giveOffer(uint256 id,uint price) external whenNotPaused nonReentrant returns (uint256) {
 		Audit memory item = getItem(id);
 		_assertOrAssignAuditor(item);
 		_assertStatus(item, 0);
+		address oldOwner = getItemOwner(item);
 		item.price = price;
 		item.status = 1;
 		items[id] = item;
+		address newOwner = getItemOwner(item);
+		if (newOwner != oldOwner) {
+			_transfer(oldOwner, newOwner, id);
+		}
 		emit ItemUpdated(id, item.status);
 		return id;
 	}
@@ -233,13 +309,18 @@ contract AuditWorkflow  is WorkflowBase, Ownable{
 	In the end a payment is made.
 	A payment in the amount of `Price` is made from caller to the address specified in the `Auditor` property.
 */
-	function acceptOffer(uint256 id) external payable returns (uint256) {
+	function acceptOffer(uint256 id) external payable whenNotPaused nonReentrant returns (uint256) {
 		Audit memory item = getItem(id);
 		_assertOrAssignClient(item);
 		_assertStatus(item, 1);
+		address oldOwner = getItemOwner(item);
 
 		item.status = 2;
 		items[id] = item;
+		address newOwner = getItemOwner(item);
+		if (newOwner != oldOwner) {
+			_transfer(oldOwner, newOwner, id);
+		}
 		emit ItemUpdated(id, item.status);
 		uint deposit = msg.value;
 		require(
@@ -268,13 +349,18 @@ contract AuditWorkflow  is WorkflowBase, Ownable{
 	
 	* `Price` = `0`
 */
-	function rejectOffer(uint256 id) external returns (uint256) {
+	function rejectOffer(uint256 id) external whenNotPaused nonReentrant returns (uint256) {
 		Audit memory item = getItem(id);
 		_assertOrAssignClient(item);
 		_assertStatus(item, 1);
+		address oldOwner = getItemOwner(item);
 		item.price = 0;
 		item.status = 0;
 		items[id] = item;
+		address newOwner = getItemOwner(item);
+		if (newOwner != oldOwner) {
+			_transfer(oldOwner, newOwner, id);
+		}
 		emit ItemUpdated(id, item.status);
 		return id;
 	}
@@ -297,22 +383,20 @@ contract AuditWorkflow  is WorkflowBase, Ownable{
 	
 	* `Image` (Image)
 	* `Description` (String)
-	
-	The following calculations involving data from other smart-contracts will be done next:
-	
-	* `Image` = `( Image == "" ) ? Auditor Flow Image : Image`
 */
-	function completeAudit(uint256 id,string calldata image,string calldata description) external returns (uint256) {
+	function completeAudit(uint256 id,string calldata image,string calldata description) external whenNotPaused nonReentrant returns (uint256) {
 		Audit memory item = getItem(id);
 		_assertOrAssignAuditor(item);
 		_assertStatus(item, 2);
+		address oldOwner = getItemOwner(item);
 		item.image = image;
 		item.description = description;
-		IExternal0xleague_auditor_profile auditorFlow = IExternal0xleague_auditor_profile(serviceLocator.getService(auditorFlowAddress));
-		string memory auditorFlowImage = auditorFlow.getImage(item.auditorId);
-		item.image = ( item.image == "" ) ? auditorFlowImage : item.image;
 		item.status = 3;
 		items[id] = item;
+		address newOwner = getItemOwner(item);
+		if (newOwner != oldOwner) {
+			_transfer(oldOwner, newOwner, id);
+		}
 		emit ItemUpdated(id, item.status);
 		return id;
 	}
@@ -332,13 +416,18 @@ contract AuditWorkflow  is WorkflowBase, Ownable{
 	#### External Method Calls
 	This transition involves a call to an external method in the `0xLeague Auditor Profile` workflow through the `Add score` transition on the `Testnet` blockchain, using the address ``.
 */
-	function review(uint256 id,uint score) external returns (uint256) {
+	function review(uint256 id,uint score) external whenNotPaused nonReentrant returns (uint256) {
 		Audit memory item = getItem(id);
 		_assertOrAssignClient(item);
 		_assertStatus(item, 3);
+		address oldOwner = getItemOwner(item);
 		IExternal0xleague_auditor_profile auditorFlow = IExternal0xleague_auditor_profile(serviceLocator.getService(auditorFlowAddress));
 		item.status = 4;
 		items[id] = item;
+		address newOwner = getItemOwner(item);
+		if (newOwner != oldOwner) {
+			_transfer(oldOwner, newOwner, id);
+		}
 		emit ItemUpdated(id, item.status);
 	auditorFlow.addScore(item.auditorId, score);
 		return id;
