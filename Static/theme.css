@@ -1,0 +1,115 @@
+body {
+	background-color: black;
+	color:white;
+}
+.table{
+	color:white;
+}
+:root {
+
+
+	--dl-color-primary-primary500: #004b80;
+
+}
+
+.editorTable {
+	--color-primary: #4a4a4a;
+	--color-primary-font: white;
+	--color-pay: #b81600;
+	--color-pay-font: white;
+	--color-line:#ffffff55 !important;
+}
+.leftpane {
+	background-image: none;
+}
+.modal-footer .btn-primary, .btnPrimary {
+	border-radius: 0px;
+	color:white;
+	background-color: #e98f31;
+}
+.onlyBig ul.navi li
+{
+	border-radius: 0px !important;
+	color:white;
+	background-color: var(--dl-color-primary-primary500);
+}
+.btnTertiary {
+    border-radius: 0px;
+	color:white;
+	background-color: var(--dl-color-primary-primary500);
+}
+.header-logo img {
+    max-height: 70px;
+    top: 0;
+
+}
+.panel > *:not(.box) {
+    background-color: #ffffff15 !important;
+border-radius: 0 !important;
+}
+.detailsnavigation{
+	background-color:transparent !important;
+}
+.flowNameHeaderBanner{
+	background-color: #ffffff15 !important;
+	color: white !important;
+}
+.modal-footer .btn-secondary, .btnSecondary {
+    border-radius: 0px;
+}
+.modal-content {
+    border: 0;
+    background-color: black;
+    border-radius: 0px;
+
+}
+.model-dialog
+{
+	box-shadow: 5px 10px 100px #00000055;
+}
+.whiteIcon
+{
+	display:inline !important;
+}
+.blackIcon
+{
+	display:none !important;
+}
+.stateCell, .swimlaneCell {
+
+	color:white !important;
+}
+.swimlaneCell.currentState{
+background-color: #203645 !important;
+}
+.hasActiveState .disabledArrow .arrowLine {
+    background-color: #ffffff55 !important;
+}
+.currentState .arrowLine {
+    background-color: var(--dl-color-primary-primary500) !important;
+}
+.canClickArrow:hover {
+    cursor: pointer;
+    background-color: #e98f31 !important;
+}
+.naviItem, .screenactive {
+	display:none !important;
+}
+.naviWhite, .screeninactive  {
+    display: inline !important;
+}
+.onlyBig li.naviSelectedItem, .activelayout,.canOpen.isActive {
+
+    outline: 1px solid #e98f31 !important;
+}
+.searchLine input, input[type=text], input[type=date], input[type=datetime-local], input[type=number], textarea, select
+{
+	background-color: black !important;
+	border: 1px solid rgba(61, 61, 61, 1) !important;
+	color:white;
+}
+.canOpen:hover , .canOpen.isActive 
+{
+	background-color: #203645 !important;
+	border-radius:0px !important;
+}
