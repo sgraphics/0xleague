@@ -1,5 +1,5 @@
 body {
-	background-color: black;
+	background-color: #0a202f;
 	color:white;
 }
 .table{
@@ -9,7 +9,7 @@ body {
 
 
 	--dl-color-primary-primary500: #004b80;
-
+--shadow: 0px 10px 10px 0px rgba(0, 0, 0, .1);
 }
 
 .editorTable {
@@ -59,9 +59,10 @@ border-radius: 0 !important;
 }
 .modal-content {
     border: 0;
-    background-color: black;
+    background-color: #0a202f;
     border-radius: 0px;
-
+border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
 }
 .model-dialog
 {
@@ -76,14 +77,15 @@ border-radius: 0 !important;
 	display:none !important;
 }
 .stateCell, .swimlaneCell {
-
+	border-radius: 0 !important;
 	color:white !important;
 }
 .swimlaneCell.currentState{
-background-color: #203645 !important;
+	background-color: #2b4252 !important;
+	border-color: #e98f31 !important;
 }
 .hasActiveState .disabledArrow .arrowLine {
-    background-color: #ffffff55 !important;
+background-color: #495964 !important;
 }
 .currentState .arrowLine {
     background-color: var(--dl-color-primary-primary500) !important;
@@ -112,4 +114,17 @@ background-color: #203645 !important;
 {
 	background-color: #203645 !important;
 	border-radius:0px !important;
+}
+.disabledArrow .arrowLine span
+{
+	color: white !important;
+}
+a.btnTertiary
+{
+	color: white;
+	background-color: #464646;
+}
+a.btnTertiary:hover
+{
+	text-decoration:none;
 }
