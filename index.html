@@ -32,20 +32,24 @@ display:none;
 <div style="margin-top: 20vw;">
     <p class="logo"><img  src="https://github.com/sgraphics/0xleague/blob/main/Static/Images/logo_large.png?raw=true"/></p>
     <p class="buttons">
-        <strong>Smart-contract security researchers and auditors united to supercharge Web3 adoption.</strong>
-        <br/>
-        Apply and manage audits on-chain. Issue/receive NFT badge for successful audits.
-        
-        <br/>
+        <strong>Smart-contract security researchers and auditors<br/> united to supercharge Web3 adoption.</strong>
+      </p>
+        <ul>
+                <li>Browse auditors by track record</li>
+                <li>Apply and manage audits on-chain</li>
+                <li>Issue/receive NFT badge for successful audits</li>
+        </ul>
+
+    <p class="buttons">
         <button
-            class="btnPrimary"
-            onclick="$('.buttons').addClass('slide-out'); $('.bg').addClass('fade-out'); $('.logo').addClass('slide-up'); setTimeout(function() { Blazor._internal.navigationManager.navigateTo('https://localhost:7058/flow/0xleague_audit_management2', false); }, 500);">
-            Audits
+            class="btnSecondary"
+            onclick="$('.buttons').addClass('slide-out'); $('.bg').addClass('fade-out'); $('.logo').addClass('slide-up'); setTimeout(function() { Blazor._internal.navigationManager.navigateTo('https://app.toolblox.net/flow/0xleague_audit_management', false); }, 500);">
+            Browse Audits ⟶
         </button>
         <button
-            class="btnPrimary"
-            onclick="$('.buttons').addClass('slide-out'); $('.bg').addClass('fade-out'); $('.logo').addClass('slide-up'); setTimeout(function() { Blazor._internal.navigationManager.navigateTo('https://localhost:7058/flow/0xleague_auditor_profile2', false); }, 500);">
-            Auditors
+            class="btnSecondary"
+            onclick="$('.buttons').addClass('slide-out'); $('.bg').addClass('fade-out'); $('.logo').addClass('slide-up'); setTimeout(function() { Blazor._internal.navigationManager.navigateTo('https://app.toolblox.net/flow/0xleague_auditor_profile', false); }, 500);">
+            Browse Auditors ⟶
         </button>
     </p>
     </div>
@@ -55,10 +59,23 @@ display:none;
         max-width: 400px;
         min-width: 250px;
     }
-    .btnPrimary{
+.logo
+{
+margin-bottom: 0;
+}
+    .btnPrimary, .btnSecondary{
     border-radius:0px;
     margin:10px;
     }
+strong{
+font-weight: 400;
+}
+ul{
+    text-align: center;
+    list-style-type: none;
+    font-size: 10pt;
+    opacity: 0.6;
+}
     p{
     text-align:center;
     }
@@ -81,4 +98,18 @@ display:none;
         transform: translateY(-30vh); /* Move the element out of the screen to the top */
         opacity: 0; /* Fade out the background */
     }
+.btnSecondary {
+    background-color: white;
+    border: 1px solid black;
+    padding: 10px 25px;
+    font-weight: 600;
+    color: black;
+    box-shadow: var(--shadow);
+    box-sizing: border-box;
+    text-align: center;
+    display: inline-flex;
+    cursor: pointer;
+    white-space: nowrap;
+    text-decoration: none;
+}
     </style>
