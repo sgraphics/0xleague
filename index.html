@@ -1,0 +1,74 @@
+<!-- Midjourney generated hero image -->
+<div class="bg"></div>
+<style>
+.topNaviSection,.naviFooter  {
+display:none;
+}
+.bg {
+    background-image: url(https://github.com/sgraphics/0xleague/blob/main/Static/Images/hero.png?raw=true);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center top;
+    background-size: contain;
+    /* max-width: 1000px; */
+    width: 100vw;
+    margin: 0 auto;
+    height: 100vh;
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    /*left: 0;*/
+    right: 0;
+}
+.topNaviSection {
+    position: absolute;
+    z-index: 1;
+    top: 10px;
+    right: 10px;
+}
+</style>
+<!-- Logo and buttons -->
+
+<div style="margin-top: 20vw;">
+    <p class="logo"><img  src="https://github.com/sgraphics/0xleague/blob/main/Static/Images/logo_large.png?raw=true"/></p>
+    <p class="buttons">
+    <strong>Smart-contract security researchers and auditors united to supercharge Web3 adoption.</strong>
+    <br/>
+    Apply and manage audits on-chain. Issue/receive NFT badge for successful audits.
+    
+    <br/>
+    <button class="btnPrimary" id="myButton" onclick="$('.buttons').addClass('slide-out'); $('.bg').addClass('fade-out'); $('.logo').addClass('slide-up'); setTimeout(function() { Blazor._internal.navigationManager.navigateTo('https://localhost:7058/flow/0xleague_audit_management2', false); }, 500);">Audits</button><button class="btnPrimary" id="myButton" onclick="$('.buttons').addClass('slide-out'); $('.bg').addClass('fade-out'); $('.logo').addClass('slide-up'); setTimeout(function() { Blazor._internal.navigationManager.navigateTo('https://localhost:7058/flow/0xleague_auditor_profile2', false); }, 500);">Auditors</button></p>
+    </div>
+    <style>
+    .logo img{
+        width: 30vw;
+        max-width: 400px;
+        min-width: 250px;
+    }
+    .btnPrimary{
+    border-radius:0px;
+    margin:10px;
+    }
+    p{
+    text-align:center;
+    }
+    /* Initial button and background styles */
+    .buttons, .logo, .bg {
+        transition: 0.5s ease-in-out; /* Animation effect */
+    }
+    
+    /* Class to slide the button out */
+    .slide-out {
+        transform: translateY(30vh); /* Move the button out of the screen to the bottom */
+        opacity: 0; /* Fade out the background */
+    }
+    
+    /* Class to fade out the background */
+    .fade-out {
+        opacity: 0; /* Fade out the background */
+    }
+    .slide-up {
+        transform: translateY(-30vh); /* Move the element out of the screen to the top */
+        opacity: 0; /* Fade out the background */
+    }
+    </style>
