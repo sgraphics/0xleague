@@ -100,7 +100,7 @@ background-color: #495964 !important;
 .naviWhite, .screeninactive  {
     display: inline !important;
 }
-.onlyBig li.naviSelectedItem, .activelayout,.canOpen.isActive {
+.onlyBig li.naviSelectedItem, .gridcard.activeGridCard, .activelayout,.canOpen.isActive {
 
     outline: 1px solid #e98f31 !important;
 }
@@ -127,4 +127,9 @@ a.btnTertiary
 a.btnTertiary:hover
 {
 	text-decoration:none;
+}
+.gridcard
+{
+    background-color: #203645 !important;
+    border-radius: 0px !important;
 }
